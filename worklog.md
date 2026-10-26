@@ -45,3 +45,19 @@ Stage Summary:
 - Full session now fits 15 minutes: ~2 min join + ~1 min rules + ~6.5 min three rounds w/ debriefs + ~45s leaderboard + ~2.5 min finale + ~1.5 min wrap ≈ 14 min with buffer. All pedagogy (level-k, spiral, Nash trap, payoff matrix) retained.
 - Timer ceilings: 30/25/20s rounds, 25s finale vote; host SKIP TIMER remains the safety valve if running behind.
 - Ops note: after ANY future edit to mini-services/game-service/index.ts, run `bash scripts/restart-game-service.sh` (bun --hot is unreliable for this service — it kept serving stale constants).
+
+---
+Task ID: 3
+Agent: Z.ai (main agent)
+Task: Create a 15-minute team presentation & game script document for the 5 named presenters (Saraswati, Anushka, Aditi, Atharv, Visesh), ensuring the game-theory topic is understandable by everyone.
+
+Work Log:
+- Loaded docx skill chain: SKILL.md → routes/create.md → scenes/copywriting.md (hosting-script scene: no cover, no TOC, line 400, Profile B/Calibri, conversational register) → references/common-rules.md → docx-js-core.md → design-system.md (fonts + horizontal-only table style). Installed docx@9.14.0.
+- Called Outline (8 sections), then wrote generator at scripts/generate-team-script.js (persisted per script-persistence rule, built via 3 Write/Edit passes).
+- Document content (18 pages, ~4,300 words): title block + how-to-use; roles & timing tables (Saraswati=MC, Anushka=Tech, Aditi=Theory R1-2, Atharv=Theory R3+Finale, Visesh=Floor); tech runbook with real UI control names (NEXT/SKIP TIMER/Encore/Full wipe, 30/25/20s timers); T-10 pre-show checklist; 10 timed verbatim script segments with grey stage directions, orange Anushka cues, [CUT FIRST] markers, comprehension checks; 4 theory crib paragraphs (beauty contest/Keynes/Nagel, level-k 50→33→22→15, iterated dominance 100→66.7→44.4→…→0 + Nash + bounded rationality, prisoner's dilemma + utility); 7 professor Q&As with owner assignments; contingency playbook (paper fallback, finalist-phone-dies, behind/ahead schedule, 10-min cut); rehearsal plan w/ bot-squad command + print checklist.
+- Prize name uses consistent 【prize name】 placeholder (6 occurrences, find-replace ready).
+- Verification: postcheck.py 0 errors (1 line-spacing warning = intentional scene typography); pdftotext integrity clean (no undefined/NaN, all 5 speakers present, 37 speaker lines); LibreOffice PDF render + VLM visual QA on 13 pages — all PASS.
+
+Stage Summary:
+- Deliverable: /home/z/my-project/download/Two-Thirds-Arena-Team-Script.docx (18 pages, print-ready).
+- Generator kept at scripts/generate-team-script.js for future edits (change prize, swap roles, re-time segments → edit + re-run).
