@@ -4,7 +4,7 @@ import { motion } from 'framer-motion'
 import { Gift, Lock, Swords, Timer } from 'lucide-react'
 import { CountdownRing } from '../CountdownRing'
 import { Confetti } from '../Confetti'
-import type { HostState } from '../types'
+import { FINALE_SECONDS, type HostState } from '../types'
 
 function FinalistCard({
   name,
@@ -116,7 +116,7 @@ export function HostFinaleVote({ state }: { state: HostState }) {
         </p>
       </div>
 
-      <CountdownRing endsAt={state.endsAt} totalMs={40000} size={190} label="to decide" />
+      <CountdownRing endsAt={state.endsAt} totalMs={FINALE_SECONDS * 1000} size={190} label="to decide" />
 
       <div className="grid w-full max-w-3xl grid-cols-[1fr_auto_1fr] items-center gap-4">
         <FinalistCard name={f1?.name ?? 'Player 1'} score={f1?.score ?? 0} state={c1} />

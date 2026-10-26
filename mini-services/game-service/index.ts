@@ -26,8 +26,10 @@ export const PHASES: Phase[] = [
   'leaderboard', 'finale_intro', 'finale_vote', 'finale_reveal', 'finale_debrief', 'wrap',
 ]
 
-export const ROUND_SECONDS = 45
-export const FINALE_SECONDS = 40
+// 15-minute show pacing: guess windows shrink each round. These are
+// ceilings — a round ends early the moment every eligible player locks in.
+export const ROUND_SECONDS: Record<number, number> = { 1: 30, 2: 25, 3: 20 }
+export const FINALE_SECONDS = 25
 
 interface Player {
   id: string
@@ -144,7 +146,7 @@ function enterPhase(room: Room, phase: Phase, reason = '') {
       delete room.results[round]
     }
     for (const p of room.players.values()) delete p.guesses[round]
-    room.endsAt = Date.now() + ROUND_SECONDS * 1000
+    room.endsAt = Date.now() + (ROUND_SECONDS[round] ?? 30) * 1000
   }
 
   if (phase === 'r1_reveal' || phase === 'r2_reveal' || phase === 'r3_reveal') {

@@ -23,3 +23,25 @@ Stage Summary:
 - Game design: 3 rounds of Guess-⅔-of-average → level-k / iterated dominance / Nash debriefs built from the class's own live data → leaderboard → top-2 Split-or-Steal finale for a real prize → utility-theory payoff-matrix debrief → wrap. Maps to the user's syllabus (utility theory, sequential decision problems via backward-induction link, game theory concepts).
 - Quality: lint clean, 58/58 E2E, browser-verified end-to-end incl. mobile, zero console errors, all screenshots archived.
 - Scripts kept for reuse: scripts/e2e-test.mjs, scripts/bot-squad.mjs (auto-playing bots for rehearsal), scripts/add-players.mjs, scripts/probe-socket.mjs.
+
+---
+Task ID: 2
+Agent: Z.ai (main agent)
+Task: Compress the Two-Thirds Arena session to a 15-minute format (user request: "LIMIT THIS GAME TO 15 MINS").
+
+Work Log:
+- Mapped the timing surface: service ROUND_SECONDS=45 (all rounds) + FINALE_SECONDS=40; hardcoded totalMs={45000}/{40000} in host RoundOpen/Finale; player TimerBar + CountdownRing had fixed 10s urgency thresholds.
+- Retuned pacing (ceilings only — auto-reveal still fires the moment every eligible player locks in):
+  - Round windows now shrink for pace: R1 45→30s, R2 45→25s, R3 45→20s; finale vote 40→25s.
+  - Service: ROUND_SECONDS is now a per-round Record; room.endsAt uses per-round lookup.
+  - Client: mirrored ROUND_SECONDS/FINALE_SECONDS in src/components/game/types.ts; host CountdownRings derive totalMs from the constants; PlayerView TimerBar takes totalMs; urgency (red) is proportional (last third of the window, clamped 4–10s) in both TimerBar and CountdownRing; CountdownRing default totalMs 45000→30000.
+  - Howto screen copy announces the pace ("30, 25, then 20 seconds on the clock").
+- Extended scripts/e2e-test.mjs with 4 timer-window assertions (r1 30s / r2 25s / r3 20s / finale 25s).
+- Found `bun --hot` did NOT apply the constant edit to the live service (old 40s window still served; nohup'd restart also died with the shell). Added scripts/restart-game-service.sh: pkill old instance + setsid-detached plain `bun index.ts` (no --hot → deterministic for the live event, survives shell exit). Service now persists across sessions.
+- E2E: 62/62 passed. ESLint clean on all 6 changed files. Next dev compiled with zero errors.
+- Browser-verified via gateway (port 81): new howto copy, host ring counts down from 30, phone TimerBar live, submit→auto-reveal→scoring correct (92 pts for guess 50), timer-expiry auto-advance, full-wipe reset, zero console/page errors. Screenshots: 05-howto-15min.png, 06-round1-open-15min.png, 22-phone-guess-ui-15min.png, 08-round1-reveal-15min.png.
+
+Stage Summary:
+- Full session now fits 15 minutes: ~2 min join + ~1 min rules + ~6.5 min three rounds w/ debriefs + ~45s leaderboard + ~2.5 min finale + ~1.5 min wrap ≈ 14 min with buffer. All pedagogy (level-k, spiral, Nash trap, payoff matrix) retained.
+- Timer ceilings: 30/25/20s rounds, 25s finale vote; host SKIP TIMER remains the safety valve if running behind.
+- Ops note: after ANY future edit to mini-services/game-service/index.ts, run `bash scripts/restart-game-service.sh` (bun --hot is unreliable for this service — it kept serving stale constants).

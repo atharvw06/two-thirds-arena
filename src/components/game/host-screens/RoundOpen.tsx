@@ -3,7 +3,7 @@
 import { motion } from 'framer-motion'
 import { Lock } from 'lucide-react'
 import { CountdownRing } from '../CountdownRing'
-import type { HostState } from '../types'
+import { ROUND_SECONDS, type HostState } from '../types'
 
 const ROUND_SUB: Record<number, string> = {
   1: 'First instincts — no strategy talk.',
@@ -32,7 +32,7 @@ export function HostRoundOpen({ state }: { state: HostState }) {
         <p className="mt-2 text-sm font-semibold text-zinc-500">{ROUND_SUB[round]}</p>
       </motion.div>
 
-      <CountdownRing endsAt={state.endsAt} totalMs={45000} size={220} label="seconds left" />
+      <CountdownRing endsAt={state.endsAt} totalMs={(ROUND_SECONDS[round] ?? 30) * 1000} size={220} label="seconds left" />
 
       <div className="w-full max-w-xl">
         <div className="flex items-center justify-between text-sm font-bold">

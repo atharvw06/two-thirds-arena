@@ -5,7 +5,7 @@ import { useEffect, useState } from 'react'
 /** Big circular countdown ring driven by an absolute end timestamp + explicit window length. */
 export function CountdownRing({
   endsAt,
-  totalMs = 45000,
+  totalMs = 30000,
   size = 200,
   stroke = 10,
   label = 'seconds left',
@@ -31,7 +31,9 @@ export function CountdownRing({
 
   const r = (size - stroke) / 2
   const c = 2 * Math.PI * r
-  const urgent = seconds <= 10
+  // Urgency scales with the window (last third of the clock, clamped 4–10s)
+  const urgentMs = Math.max(4000, Math.min(10000, windowMs / 3))
+  const urgent = remaining <= urgentMs
 
   return (
     <div className="relative inline-flex items-center justify-center" role="timer" aria-label={`${seconds} ${label}`}>

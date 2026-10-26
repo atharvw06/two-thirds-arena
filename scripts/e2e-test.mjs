@@ -93,6 +93,8 @@ try {
   }
   await advance(2) // howto -> r1_open
   check('phase r1_open', latestHost.phase === 'r1_open', latestHost.phase)
+  const w1 = (latestHost.endsAt ?? 0) - Date.now()
+  check('r1 window is 30s', w1 > 27500 && w1 <= 30500, `${(w1 / 1000).toFixed(1)}s`)
   check('eligible count 5', latestHost.eligibleCount === 5, `n=${latestHost.eligibleCount}`)
   check('player can play now', players[0].state.you.canPlayNow === true)
 
@@ -125,6 +127,8 @@ try {
   // ---------- round 2 ----------
   await advance(2) // r1_debrief -> r2_open
   check('phase r2_open', latestHost.phase === 'r2_open')
+  const w2 = (latestHost.endsAt ?? 0) - Date.now()
+  check('r2 window is 25s', w2 > 22500 && w2 <= 25500, `${(w2 / 1000).toFixed(1)}s`)
   const G2 = [20, 15, 8, 0, 30]
   for (let i = 0; i < players.length; i++) {
     players[i].socket.emit('player:guess', { guess: G2[i] })
@@ -140,6 +144,8 @@ try {
   // ---------- round 3 ----------
   await advance(2)
   check('phase r3_open', latestHost.phase === 'r3_open')
+  const w3 = (latestHost.endsAt ?? 0) - Date.now()
+  check('r3 window is 20s', w3 > 17500 && w3 <= 20500, `${(w3 / 1000).toFixed(1)}s`)
   const G3 = [10, 5, 8, 0, 2]
   for (let i = 0; i < players.length; i++) {
     players[i].socket.emit('player:guess', { guess: G3[i] })
@@ -167,6 +173,8 @@ try {
 
   await advance(2) // finale_intro -> finale_vote
   check('finale_vote phase', latestHost.phase === 'finale_vote')
+  const wf = (latestHost.endsAt ?? 0) - Date.now()
+  check('finale window is 25s', wf > 22500 && wf <= 25500, `${(wf / 1000).toFixed(1)}s`)
   check('finalist flags set', players[1].state.you.isFinalist === true && players[2].state.you.isFinalist === true)
   check('non-finalist excluded', players[0].state.you.isFinalist === false)
 

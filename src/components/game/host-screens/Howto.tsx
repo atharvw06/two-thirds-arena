@@ -23,7 +23,7 @@ const STEPS = [
   {
     n: 4,
     title: 'Points, three rounds, a finale',
-    desc: 'Closest scores big. Three rounds stack up. The top two duel for the prize in Split or Steal.',
+    desc: 'Closest scores big. Three rounds stack up — 30, 25, then 20 seconds on the clock. The top two duel for the prize in Split or Steal.',
   },
 ]
 

@@ -11,7 +11,7 @@ import { Input } from '@/components/ui/input'
 import { Slider } from '@/components/ui/slider'
 import { getGameSocket } from './socket'
 import { useSocketConnected } from './use-connected'
-import { fmtNum, type PlayerState } from './types'
+import { FINALE_SECONDS, ROUND_SECONDS, fmtNum, type PlayerState } from './types'
 
 const LS = {
   id: 'gt3.playerId',
@@ -334,7 +334,7 @@ function GuessPanel({
 
   return (
     <div className="flex flex-1 flex-col justify-center gap-6">
-      {state.endsAt && <TimerBar endsAt={state.endsAt} />}
+      {state.endsAt && <TimerBar endsAt={state.endsAt} totalMs={(ROUND_SECONDS[round] ?? 30) * 1000} />}
 
       <div className="text-center">
         <p className="text-[11px] font-black uppercase tracking-[0.3em] text-amber-400">Round {round} of 3</p>
@@ -409,7 +409,7 @@ function GuessPanel({
   )
 }
 
-function TimerBar({ endsAt }: { endsAt: number }) {
+function TimerBar({ endsAt, totalMs = 30000 }: { endsAt: number; totalMs?: number }) {
   const [now, setNow] = useState(() => Date.now())
   useEffect(() => {
     const t = setInterval(() => setNow(Date.now()), 250)
@@ -417,12 +417,14 @@ function TimerBar({ endsAt }: { endsAt: number }) {
   }, [])
   const remaining = Math.max(0, endsAt - now)
   const seconds = Math.ceil(remaining / 1000)
+  // Urgency scales with the window (last third of the clock, clamped 4–10s)
+  const urgent = remaining <= Math.max(4000, Math.min(10000, totalMs / 3))
   return (
     <div className="flex items-center justify-between rounded-xl border border-zinc-800 bg-zinc-900/60 px-4 py-2.5" role="timer">
       <span className="inline-flex items-center gap-1.5 text-xs font-bold text-zinc-400">
         <Timer className="h-3.5 w-3.5" aria-hidden="true" /> time left
       </span>
-      <span className={`text-lg font-black tabular-nums ${seconds <= 10 ? 'text-rose-400' : 'text-zinc-100'}`}>{seconds}s</span>
+      <span className={`text-lg font-black tabular-nums ${urgent ? 'text-rose-400' : 'text-zinc-100'}`}>{seconds}s</span>
     </div>
   )
 }
@@ -574,7 +576,7 @@ function FinaleVote({
 
   return (
     <div className="flex flex-1 flex-col justify-center gap-6">
-      {state.endsAt && <TimerBar endsAt={state.endsAt} />}
+      {state.endsAt && <TimerBar endsAt={state.endsAt} totalMs={FINALE_SECONDS * 1000} />}
       <div className="text-center">
         <p className="text-[11px] font-black uppercase tracking-[0.3em] text-rose-400">The Finale</p>
         <h2 className="mt-1 text-2xl font-black leading-tight">

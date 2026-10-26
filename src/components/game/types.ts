@@ -18,6 +18,11 @@ export const PHASES: Phase[] = [
   'leaderboard', 'finale_intro', 'finale_vote', 'finale_reveal', 'finale_debrief', 'wrap',
 ]
 
+// Timer ceilings per round — must mirror mini-services/game-service/index.ts.
+// The clock is a ceiling: rounds auto-reveal early once everyone locks in.
+export const ROUND_SECONDS: Record<number, number> = { 1: 30, 2: 25, 3: 20 }
+export const FINALE_SECONDS = 25
+
 export const PHASE_LABELS: Record<Phase, string> = {
   lobby: 'Lobby',
   howto: 'How To Play',
