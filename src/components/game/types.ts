@@ -1,50 +1,63 @@
-// Shared client-side type mirrors of the game service state payloads.
+// Shared client-side type mirrors of the game engine state payloads.
 
 export type Phase =
-  | 'lobby' | 'howto'
-  | 'r1_open' | 'r1_reveal' | 'r1_debrief'
-  | 'r2_open' | 'r2_reveal' | 'r2_debrief'
-  | 'r3_open' | 'r3_reveal' | 'r3_debrief'
-  | 'leaderboard' | 'finale_intro' | 'finale_vote' | 'finale_reveal' | 'finale_debrief' | 'wrap'
+  | 'lobby'
+  | 'howto'
+  | 'r1_open'
+  | 'r1_reveal'
+  | 'r1_debrief'
+  | 'r2_open'
+  | 'r2_reveal'
+  | 'r2_debrief'
+  | 'leaderboard'
+  | 'finale_intro'
+  | 'finale_vote'
+  | 'finale_reveal'
+  | 'finale_debrief'
+  | 'wrap'
 
 export type FinaleChoice = 'split' | 'steal'
 export type FinaleOutcome = 'both-split' | 'one-steals' | 'both-steal'
 
 export const PHASES: Phase[] = [
-  'lobby', 'howto',
-  'r1_open', 'r1_reveal', 'r1_debrief',
-  'r2_open', 'r2_reveal', 'r2_debrief',
-  'r3_open', 'r3_reveal', 'r3_debrief',
-  'leaderboard', 'finale_intro', 'finale_vote', 'finale_reveal', 'finale_debrief', 'wrap',
+  'lobby',
+  'howto',
+  'r1_open',
+  'r1_reveal',
+  'r1_debrief',
+  'r2_open',
+  'r2_reveal',
+  'r2_debrief',
+  'leaderboard',
+  'finale_intro',
+  'finale_vote',
+  'finale_reveal',
+  'finale_debrief',
+  'wrap',
 ]
 
-// Timer ceilings per round — must mirror mini-services/game-service/index.ts.
-// The clock is a ceiling: rounds auto-reveal early once everyone locks in.
-export const ROUND_SECONDS: Record<number, number> = { 1: 30, 2: 25, 3: 20 }
+export const ROUND_SECONDS: Record<number, number> = { 1: 30, 2: 25 }
 export const FINALE_SECONDS = 25
 
 export const PHASE_LABELS: Record<Phase, string> = {
-  lobby: 'Lobby',
-  howto: 'How To Play',
-  r1_open: 'Round 1 · Live',
-  r1_reveal: 'Round 1 · Reveal',
-  r1_debrief: 'Round 1 · Level-K',
-  r2_open: 'Round 2 · Live',
-  r2_reveal: 'Round 2 · Reveal',
-  r2_debrief: 'Round 2 · The Spiral',
-  r3_open: 'Round 3 · Live',
-  r3_reveal: 'Round 3 · Reveal',
-  r3_debrief: 'Round 3 · Nash Trap',
-  leaderboard: 'Leaderboard',
-  finale_intro: 'Finale · Intro',
+  lobby: 'Lobby · Join Room',
+  howto: 'How To Play & Purpose',
+  r1_open: 'Round 1 · Intuition',
+  r1_reveal: 'Round 1 · The Spread',
+  r1_debrief: 'Round 1 · Level-K Ladder',
+  r2_open: 'Round 2 · The Spiral',
+  r2_reveal: 'Round 2 · Convergence',
+  r2_debrief: 'Round 2 · Nash Trap',
+  leaderboard: 'Finalists Showdown',
+  finale_intro: 'Finale · Split or Steal',
   finale_vote: 'Finale · Voting',
   finale_reveal: 'Finale · Reveal',
-  finale_debrief: 'Finale · Utility',
-  wrap: 'Wrap Up',
+  finale_debrief: 'Finale · Utility Matrix',
+  wrap: 'Grand Takeaways',
 }
 
 export const roundOfPhase = (phase: Phase): number =>
-  phase.startsWith('r1_') ? 1 : phase.startsWith('r2_') ? 2 : phase.startsWith('r3_') ? 3 : 0
+  phase.startsWith('r1_') ? 1 : phase.startsWith('r2_') ? 2 : 0
 
 export interface PublicPlayer {
   id: string
@@ -70,6 +83,8 @@ export interface RoundResult {
 export interface HostState {
   role: 'host'
   code: string
+  localIp?: string
+  publicUrl?: string
   phase: Phase
   phaseIndex: number
   totalPhases: number

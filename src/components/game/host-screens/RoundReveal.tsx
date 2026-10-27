@@ -96,6 +96,14 @@ export function HostRoundReveal({ state }: { state: HostState }) {
               </p>
             </div>
           </motion.div>
+
+          {/* Presenter Cue Card */}
+          <div className="rounded-2xl border border-amber-500/30 bg-amber-500/5 p-3.5">
+            <p className="text-[10px] font-black uppercase tracking-widest text-amber-400">Presenter Line · Saraswati</p>
+            <p className="mt-1 text-xs font-semibold leading-relaxed text-zinc-200">
+              &ldquo;The class average was <span className="text-amber-300 font-bold">{fmtNum(r?.mean ?? 0, 1)}</span>, making the target <span className="text-emerald-300 font-bold">{fmtNum(r?.target ?? 0, 1)}</span>! Why did {r?.winners[0]?.name ?? 'the winner'} win? Because they didn&apos;t think about the number—they thought about <span className="text-amber-300 font-bold">us</span>. Aditi, take the room down the rabbit hole.&rdquo;
+            </p>
+          </div>
         </div>
       </div>
     </div>

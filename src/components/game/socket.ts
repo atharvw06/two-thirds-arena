@@ -5,12 +5,12 @@ import { io, type Socket } from 'socket.io-client'
 let socket: Socket | null = null
 
 /**
- * Singleton socket.io connection to the game service.
- * NEVER use a port in the URL — the gateway routes via the XTransformPort query param.
+ * Singleton socket.io connection to the unified game server.
+ * Connects directly to the current origin on standard /socket.io path.
  */
 export function getGameSocket(): Socket {
   if (!socket) {
-    socket = io('/?XTransformPort=3003', {
+    socket = io({
       transports: ['websocket', 'polling'],
       reconnection: true,
       reconnectionDelay: 1000,

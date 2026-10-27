@@ -39,20 +39,26 @@ export function Landing({ onJoin, onHost }: { onJoin: () => void; onHost: () => 
           <Button
             size="lg"
             onClick={onJoin}
-            className="h-16 w-full bg-amber-400 text-lg font-black tracking-wide text-zinc-950 hover:bg-amber-300"
+            className="h-16 w-full flex-col bg-amber-400 py-2 text-base font-black tracking-wide text-zinc-950 hover:bg-amber-300"
           >
-            <Smartphone className="mr-2 h-6 w-6" aria-hidden="true" />
-            JOIN THE GAME
-            <ChevronRight className="ml-1 h-6 w-6" aria-hidden="true" />
+            <span className="inline-flex items-center text-lg">
+              <Smartphone className="mr-2 h-5 w-5" aria-hidden="true" />
+              JOIN AS PLAYER (MOBILE)
+              <ChevronRight className="ml-1 h-5 w-5" aria-hidden="true" />
+            </span>
+            <span className="text-[11px] font-bold text-zinc-800">For students in the room</span>
           </Button>
           <Button
             size="lg"
             variant="outline"
             onClick={onHost}
-            className="h-14 w-full border-zinc-700 bg-zinc-900 text-base font-bold text-zinc-200 hover:bg-zinc-800 hover:text-zinc-50"
+            className="h-14 w-full flex-col border-zinc-700 bg-zinc-900 py-1 text-sm font-bold text-zinc-300 hover:bg-zinc-800 hover:text-zinc-50"
           >
-            <MonitorPlay className="mr-2 h-5 w-5" aria-hidden="true" />
-            HOST ON PROJECTOR
+            <span className="inline-flex items-center text-sm font-bold text-zinc-200">
+              <MonitorPlay className="mr-2 h-4 w-4" aria-hidden="true" />
+              HOST ON PROJECTOR
+            </span>
+            <span className="text-[10px] text-zinc-500">For laptop / presentation screen</span>
           </Button>
         </div>
 

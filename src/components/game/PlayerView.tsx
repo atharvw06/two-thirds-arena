@@ -215,14 +215,11 @@ function PhaseScreen({ state, socketRef }: { state: PlayerState; socketRef: Reac
       return <HowTo state={state} />
     case 'r1_open':
     case 'r2_open':
-    case 'r3_open':
       return <GuessPanel key={state.round} state={state} socketRef={socketRef} />
     case 'r1_reveal':
     case 'r2_reveal':
-    case 'r3_reveal':
     case 'r1_debrief':
     case 'r2_debrief':
-    case 'r3_debrief':
       return <RoundResultCard state={state} />
     case 'leaderboard':
     case 'finale_intro':
@@ -299,9 +296,10 @@ function GuessPanel({
   state: PlayerState
   socketRef: React.RefObject<ReturnType<typeof getGameSocket>>
 }) {
-  const [draft, setDraft] = useState<number>(50)
-  const [typed, setTyped] = useState<string>('50')
-  const [locked, setLocked] = useState(false)
+  const initialGuess = state.you.yourGuess ?? 50
+  const [draft, setDraft] = useState<number>(initialGuess)
+  const [typed, setTyped] = useState<string>(String(initialGuess))
+  const [locked, setLocked] = useState(state.you.yourGuess !== null)
   const round = state.round
 
   const lockIn = useCallback(() => {
@@ -318,26 +316,14 @@ function GuessPanel({
     setTyped(String(clamped))
   }
 
-  if (!state.you.canPlayNow) {
-    return (
-      <div className="flex flex-1 flex-col items-center justify-center gap-4 text-center">
-        <Eye className="h-14 w-14 text-zinc-600" aria-hidden="true" />
-        <h2 className="text-xl font-black">Round {round} is live</h2>
-        <p className="max-w-xs text-sm leading-relaxed text-zinc-400">
-          You joined mid-round — sit tight and watch the big screen. You&apos;re in from the next round.
-        </p>
-      </div>
-    )
-  }
-
   const submitted = state.you.yourGuess !== null
 
   return (
-    <div className="flex flex-1 flex-col justify-center gap-6">
-      {state.endsAt && <TimerBar endsAt={state.endsAt} totalMs={(ROUND_SECONDS[round] ?? 30) * 1000} />}
+    <div className="flex flex-1 flex-col justify-center gap-5">
+      {state.endsAt && <TimerBar endsAt={state.endsAt} totalMs={(ROUND_SECONDS[round] ?? 60) * 1000} />}
 
       <div className="text-center">
-        <p className="text-[11px] font-black uppercase tracking-[0.3em] text-amber-400">Round {round} of 3</p>
+        <p className="text-[11px] font-black uppercase tracking-[0.3em] text-amber-400">Round {round} of 2</p>
         <h2 className="mt-1 text-2xl font-black leading-tight">
           Pick a number
           <span className="block text-base font-bold text-zinc-400">0 – 100</span>
@@ -345,9 +331,26 @@ function GuessPanel({
       </div>
 
       {/* big number */}
-      <div className="rounded-3xl border border-amber-500/25 bg-gradient-to-b from-amber-400/10 to-transparent p-6 text-center">
-        <p className="text-7xl font-black tabular-nums text-amber-300">{typed === '' ? '—' : typed}</p>
-        <p className="mt-1 text-[10px] font-bold uppercase tracking-[0.25em] text-zinc-500">your guess</p>
+      <div className="rounded-3xl border border-amber-500/25 bg-gradient-to-b from-amber-400/10 to-transparent p-5 text-center">
+        <p className="text-6xl font-black tabular-nums text-amber-300">{typed === '' ? '—' : typed}</p>
+        <p className="mt-1 text-[10px] font-bold uppercase tracking-[0.25em] text-zinc-400">your guess</p>
+      </div>
+
+      {/* Quick preset buttons */}
+      <div className="flex flex-wrap items-center justify-center gap-1.5">
+        {[0, 15, 22, 33, 50, 67, 100].map((preset) => (
+          <button
+            key={preset}
+            type="button"
+            onClick={() => {
+              if (!locked || !submitted) setBoth(preset)
+            }}
+            disabled={locked && submitted}
+            className="rounded-lg border border-zinc-800 bg-zinc-900/80 px-2.5 py-1 text-xs font-bold text-zinc-300 transition-colors hover:border-amber-400 hover:text-amber-300 active:scale-95 disabled:opacity-40"
+          >
+            {preset}
+          </button>
+        ))}
       </div>
 
       <div className="space-y-4">
@@ -359,29 +362,33 @@ function GuessPanel({
           onValueChange={(v) => setBoth(v[0])}
           disabled={locked && submitted}
           aria-label="Your guess from 0 to 100"
-          className="[&_span:first-child]:h-3 [&_.bg-primary]:bg-amber-400"
+          className="py-2"
         />
+
         <div className="flex items-center gap-3">
-          <Input
-            value={typed}
-            onChange={(e) => {
-              const raw = e.target.value
-              if (raw === '' || /^(\d{0,3}(\.\d{0,2})?)$/.test(raw)) setTyped(raw)
-            }}
-            onBlur={() => {
-              const v = Number(typed)
-              setBoth(Number.isFinite(v) ? v : 50)
-            }}
-            disabled={locked && submitted}
-            inputMode="decimal"
-            aria-label="Type your guess"
-            className="h-12 flex-1 border-zinc-700 bg-zinc-950 text-center text-xl font-black tabular-nums"
-          />
+          <div className="relative flex-1">
+            <Input
+              value={typed}
+              onChange={(e) => {
+                const raw = e.target.value
+                if (raw === '' || /^(\d{0,3}(\.\d{0,2})?)$/.test(raw)) setTyped(raw)
+              }}
+              onBlur={() => {
+                const v = Number(typed)
+                setBoth(Number.isFinite(v) ? v : 50)
+              }}
+              disabled={locked && submitted}
+              inputMode="decimal"
+              aria-label="Type your guess"
+              className="h-14 border-zinc-700 bg-zinc-950 text-center text-2xl font-black tabular-nums text-amber-300"
+            />
+          </div>
+
           {locked && submitted ? (
             <Button
               variant="outline"
               onClick={() => setLocked(false)}
-              className="h-12 gap-2 border-zinc-700 bg-zinc-900 font-bold text-zinc-200"
+              className="h-14 gap-2 border-zinc-700 bg-zinc-900 px-5 text-base font-bold text-zinc-200"
             >
               <Pencil className="h-4 w-4" aria-hidden="true" /> Change
             </Button>
@@ -389,7 +396,7 @@ function GuessPanel({
             <Button
               onClick={lockIn}
               disabled={typed === '' || !Number.isFinite(Number(typed))}
-              className="h-12 gap-2 bg-amber-400 px-6 text-base font-black text-zinc-950 hover:bg-amber-300"
+              className="h-14 gap-2 bg-amber-400 px-6 text-base font-black text-zinc-950 hover:bg-amber-300 active:scale-95"
             >
               <Lock className="h-4 w-4" aria-hidden="true" /> Lock in
             </Button>
@@ -402,7 +409,7 @@ function GuessPanel({
           <p className="text-sm font-bold text-emerald-300">
             Locked: {fmtNum(state.you.yourGuess ?? 0)} · {state.submittedCount}/{state.eligibleCount} in
           </p>
-          <p className="mt-0.5 text-[11px] text-emerald-400/70">You can still change it until time runs out.</p>
+          <p className="mt-0.5 text-[11px] text-emerald-400/70">You can still change it until the host reveals results.</p>
         </div>
       )}
     </div>

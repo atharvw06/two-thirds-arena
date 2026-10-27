@@ -60,6 +60,24 @@ export function HostWrap({ state }: { state: HostState }) {
         ))}
       </div>
 
+      <div className="w-full max-w-4xl rounded-2xl border border-amber-500/30 bg-amber-500/5 p-4 text-left">
+        <p className="text-[10px] font-black uppercase tracking-widest text-amber-400">Visesh & Team Wrap · The 3 Final Takeaways</p>
+        <div className="mt-2 grid gap-2 sm:grid-cols-3">
+          <div className="rounded-xl bg-zinc-900/60 p-2.5">
+            <span className="font-bold text-amber-300">1. Strategic Interdependence:</span>
+            <p className="text-xs text-zinc-300">Your best move always depends on what others do (Keynesian Beauty Contest).</p>
+          </div>
+          <div className="rounded-xl bg-zinc-900/60 p-2.5">
+            <span className="font-bold text-amber-300">2. The Spiral to Zero:</span>
+            <p className="text-xs text-zinc-300">Iterated dominance collapses common knowledge to zero (the unique Nash Equilibrium).</p>
+          </div>
+          <div className="rounded-xl bg-zinc-900/60 p-2.5">
+            <span className="font-bold text-amber-300">3. Bounded Rationality:</span>
+            <p className="text-xs text-zinc-300">Real humans reason 1–2 steps ahead. Knowing the room beats knowing only the formula!</p>
+          </div>
+        </div>
+      </div>
+
       <p className="text-center text-xs font-bold uppercase tracking-[0.3em] text-zinc-600">
         Two-Thirds Arena · thanks for playing
       </p>

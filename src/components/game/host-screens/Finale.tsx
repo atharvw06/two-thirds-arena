@@ -260,6 +260,13 @@ export function HostFinaleDebrief({ state }: { state: HostState }) {
             This is <span className="text-zinc-200">utility theory</span> in one decision: the numbers in a payoff matrix
             are utils, not rupees. Change what people value, and the equilibrium moves.
           </p>
+
+          <div className="rounded-2xl border border-amber-500/30 bg-amber-500/5 p-3 text-left">
+            <p className="text-[10px] font-black uppercase tracking-widest text-amber-400">Visesh & Atharv Cue · Dilemma & Utility Theory</p>
+            <p className="mt-1 text-xs font-semibold leading-relaxed text-zinc-300">
+              &ldquo;Visesh: &lsquo;Stealing is the dominant strategy in pure money.&rsquo; Atharv: &lsquo;But real finalists split because human utility includes guilt, reputation, and fairness. Rationality is maximizing what you truly value!&rsquo;&rdquo;
+            </p>
+          </div>
         </div>
       </div>
     </div>

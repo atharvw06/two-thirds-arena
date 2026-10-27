@@ -118,6 +118,13 @@ function DebriefLevelK({ state }: { state: HostState }) {
             Key idea: there is no &quot;right answer&quot; — your best number depends on what you think{' '}
             <span className="text-zinc-200">everyone else</span> picks. That interdependence is the heart of game theory.
           </p>
+
+          <div className="rounded-2xl border border-amber-500/30 bg-amber-500/5 p-3 text-left">
+            <p className="text-[10px] font-black uppercase tracking-widest text-amber-400">Aditi Cue · Level-K Explanation</p>
+            <p className="mt-1 text-xs font-semibold leading-relaxed text-zinc-300">
+              &ldquo;Level-0 is gut feel (~50). Level-1 undercuts that (~33). Level-2 undercuts Level-1 (~22). Our class landed at Level {crowdDepth.toFixed(1)} thinking. The winner didn&apos;t solve math—they modeled the human room!&rdquo;
+            </p>
+          </div>
         </div>
       </div>
     </div>
@@ -214,6 +221,13 @@ function DebriefSpiral({ state }: { state: HostState }) {
             this &ldquo;unwind the chain&rdquo; logic is the same engine as <span className="text-zinc-200">backward induction</span>{' '}
             — solving a game tree from the last move backwards. Same idea, different clothes.
           </p>
+
+          <div className="rounded-2xl border border-amber-500/30 bg-amber-500/5 p-3 text-left">
+            <p className="text-[10px] font-black uppercase tracking-widest text-amber-400">Visesh / Aditi Cue · The Spiral to 0</p>
+            <p className="mt-1 text-xs font-semibold leading-relaxed text-zinc-300">
+              &ldquo;Any guess above 66.7 can never win. Once removed, the new ceiling drops to 44.4 → 29.6 → ... all the way to 0. Zero is the unique Nash Equilibrium. But if you guessed 0, you lost! Why? Because bounded rationality means real people stop thinking a few steps in.&rdquo;
+            </p>
+          </div>
         </div>
       </div>
     </div>

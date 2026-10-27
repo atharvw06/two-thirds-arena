@@ -22,10 +22,9 @@ import { HostFinaleIntro, HostFinaleVote, HostFinaleReveal, HostFinaleDebrief } 
 import { HostWrap } from './host-screens/Wrap'
 
 const TIMED_MS: Partial<Record<Phase, number>> = {
-  r1_open: 45000,
+  r1_open: 60000,
   r2_open: 45000,
-  r3_open: 45000,
-  finale_vote: 40000,
+  finale_vote: 35000,
 }
 
 export function HostView({ onExit }: { onExit: () => void }) {
@@ -112,9 +111,9 @@ export function HostView({ onExit }: { onExit: () => void }) {
           </span>
           <button
             onClick={onExit}
-            className="text-[10px] font-bold uppercase tracking-widest text-zinc-600 hover:text-zinc-300"
+            className="rounded-lg border border-zinc-700 bg-zinc-800/80 px-2.5 py-1 text-[11px] font-bold text-zinc-300 hover:border-amber-400 hover:text-amber-300"
           >
-            exit host
+            ← Switch to Player (Mobile)
           </button>
         </div>
       </header>
@@ -223,15 +222,12 @@ function PhaseScreen({ state, act }: { state: HostState; act: (a: string, v?: st
       return <HostHowto state={state} />
     case 'r1_open':
     case 'r2_open':
-    case 'r3_open':
-      return <HostRoundOpen state={state} />
+      return <HostRoundOpen state={state} act={act} />
     case 'r1_reveal':
     case 'r2_reveal':
-    case 'r3_reveal':
       return <HostRoundReveal state={state} />
     case 'r1_debrief':
     case 'r2_debrief':
-    case 'r3_debrief':
       return <HostDebrief state={state} />
     case 'leaderboard':
       return <HostLeaderboard state={state} />
@@ -246,6 +242,6 @@ function PhaseScreen({ state, act }: { state: HostState; act: (a: string, v?: st
     case 'wrap':
       return <HostWrap state={state} />
     default:
-      return <HostLobby state={state} />
+      return <HostLobby state={state} act={act} />
   }
 }

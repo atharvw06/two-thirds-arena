@@ -59,7 +59,16 @@ export function GameApp() {
     <div className="min-h-screen bg-zinc-950 text-zinc-100">
       {mode === 'landing' && <Landing onJoin={startPlayer} onHost={startHost} />}
       {mode === 'player' && <PlayerView initialRoom={init.room} onExit={() => setMode('landing')} />}
-      {mode === 'host' && <HostView onExit={() => setMode('landing')} />}
+      {mode === 'host' && (
+        <HostView
+          onExit={() => {
+            try {
+              localStorage.removeItem('gt3.hostMode')
+            } catch {}
+            setMode('landing')
+          }}
+        />
+      )}
     </div>
   )
 }

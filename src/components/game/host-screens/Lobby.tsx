@@ -9,9 +9,16 @@ import { Input } from '@/components/ui/input'
 import type { HostState } from '../types'
 
 export function HostLobby({ state, act }: { state: HostState; act: (a: string, v?: string) => void }) {
-  // Computed inline: the room code is stable for the session.
-  const joinUrl =
-    typeof window !== 'undefined' ? `${window.location.origin}/?room=${state.code}` : ''
+  // Computed inline: if public tunnel is active, use it; otherwise fallback to Wi-Fi IP or window origin.
+  const hostOrigin =
+    state.publicUrl
+      ? state.publicUrl
+      : typeof window !== 'undefined'
+        ? (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') && state.localIp && state.localIp !== 'localhost'
+          ? `http://${state.localIp}:${window.location.port || '3000'}`
+          : window.location.origin
+        : ''
+  const joinUrl = hostOrigin ? `${hostOrigin}/?room=${state.code}` : ''
   const [prize, setPrize] = useState('')
   const [editing, setEditing] = useState(false)
 
@@ -65,7 +72,7 @@ export function HostLobby({ state, act }: { state: HostState; act: (a: string, v
               <Button
                 size="sm"
                 onClick={() => {
-                  if (prize.trim()) act('set-prize', prize.trim())
+                  if (prize.trim()) act('set_prize', prize.trim())
                   setEditing(false)
                 }}
                 className="bg-emerald-500 font-black text-zinc-950 hover:bg-emerald-400"
@@ -87,6 +94,14 @@ export function HostLobby({ state, act }: { state: HostState; act: (a: string, v
             </button>
           )}
         </div>
+
+        {/* Presenter Cue Card */}
+        <div className="w-full max-w-md rounded-2xl border border-amber-500/30 bg-amber-500/5 p-4 text-left">
+          <p className="text-[10px] font-black uppercase tracking-widest text-amber-400">Presenter Hook · Saraswati</p>
+          <p className="mt-1 text-xs font-semibold leading-relaxed text-zinc-300">
+            &ldquo;Take your phones out! For the next 15 minutes, this class plays a live game against itself for {state.prize}. Not a quiz about game theory—you are about to become the data.&rdquo;
+          </p>
+        </div>
       </div>
 
       {/* right: live player feed */}
@@ -95,14 +110,24 @@ export function HostLobby({ state, act }: { state: HostState; act: (a: string, v
           <span className="inline-flex items-center gap-2 text-sm font-black uppercase tracking-widest text-zinc-300">
             <Users className="h-4 w-4 text-amber-400" aria-hidden="true" /> In the room
           </span>
-          <motion.span
-            key={state.playerCount}
-            initial={{ scale: 1.4 }}
-            animate={{ scale: 1 }}
-            className="text-3xl font-black tabular-nums text-amber-300"
-          >
-            {state.playerCount}
-          </motion.span>
+          <div className="flex items-center gap-3">
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={() => act('quick_bots')}
+              className="h-8 border-amber-500/40 bg-amber-400/10 text-xs font-black text-amber-300 hover:bg-amber-400/20"
+            >
+              + Quick Add Demo Players
+            </Button>
+            <motion.span
+              key={state.playerCount}
+              initial={{ scale: 1.4 }}
+              animate={{ scale: 1 }}
+              className="text-3xl font-black tabular-nums text-amber-300"
+            >
+              {state.playerCount}
+            </motion.span>
+          </div>
         </div>
 
         <div className="min-h-0 flex-1 overflow-y-auto rounded-2xl border border-zinc-800 bg-zinc-900/30 p-3 game-scroll">
